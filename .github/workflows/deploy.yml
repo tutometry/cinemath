@@ -2,7 +2,7 @@ name: Deploy worker
 
 on:
   push:
-    branches: [platform]
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
