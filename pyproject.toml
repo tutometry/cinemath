@@ -1,0 +1,53 @@
+[project]
+name = "cinemath"
+version = "0.2.0"
+description = "CLI: LLM teaches the math; local templates build the Manim animation."
+readme = "README.md"
+authors = [
+    { name = "MauricioTedeschi", email = "mauricioatedeschi@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=0.57.0",
+    "manim>=0.19.0",
+    "pillow>=11.0.0",
+    "python-dotenv>=1.1.0",
+    "sympy>=1.14.0",
+    "typer>=0.16.0",
+]
+
+[project.scripts]
+cinemath = "cinemath.cli:app"
+cinemath-worker = "cinemath.api.worker_http:main"
+cinemath-worker-job = "cinemath.api.worker_job:main"
+
+[build-system]
+requires = ["uv_build>=0.9.27,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv]
+package = true
+
+[dependency-groups]
+dev = ["pytest>=8.0", "ruff>=0.12.0"]
+
+[project.optional-dependencies]
+# CPU ONNX Kokoro (~88 MB weights on volume) + onnxruntime. Target ≤~1 GB layer delta.
+narration = [
+    "kokoro-onnx>=0.4.0",
+    "onnxruntime>=1.19.0",
+    "soundfile>=0.13.0",
+    "piper-tts>=1.2.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+pythonpath = ["tests"]
+testpaths = ["tests"]

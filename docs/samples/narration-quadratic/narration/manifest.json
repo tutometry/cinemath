@@ -1,0 +1,56 @@
+[
+  {
+    "index": 0,
+    "start_seconds": 0.0,
+    "text": "Problem",
+    "wav": "line_000.wav"
+  },
+  {
+    "index": 1,
+    "start_seconds": 2.5620000000000003,
+    "text": "Where the parabola meets the x-axis",
+    "wav": "line_001.wav"
+  },
+  {
+    "index": 2,
+    "start_seconds": 7.061999999999999,
+    "text": "Standard form $ax^{2}+bx+c=0$ with $a=1$, $b=-5$, $c=6$.",
+    "wav": "line_002.wav"
+  },
+  {
+    "index": 3,
+    "start_seconds": 9.584,
+    "text": "Find two numbers that multiply to $6$ and add to $-5$.",
+    "wav": "line_003.wav"
+  },
+  {
+    "index": 4,
+    "start_seconds": 11.732000000000001,
+    "text": "Rewrite the $-5x$ term using $-2$ and $-3$.",
+    "wav": "line_004.wav"
+  },
+  {
+    "index": 5,
+    "start_seconds": 13.748000000000003,
+    "text": "Group the four terms and pull out the common binomial.",
+    "wav": "line_005.wav"
+  },
+  {
+    "index": 6,
+    "start_seconds": 16.846000000000004,
+    "text": "Set each factor equal to zero.",
+    "wav": "line_006.wav"
+  },
+  {
+    "index": 7,
+    "start_seconds": 20.806,
+    "text": "Substitute each root back into the original equation.",
+    "wav": "line_007.wav"
+  },
+  {
+    "index": 8,
+    "start_seconds": 24.242,
+    "text": "Solutions",
+    "wav": "line_008.wav"
+  }
+]

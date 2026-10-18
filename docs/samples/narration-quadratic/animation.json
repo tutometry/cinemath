@@ -1,0 +1,515 @@
+{
+  "version": 1,
+  "problem": "Solve for $x$: $x^2 - 5x + 6 = 0$.",
+  "answer": "x = 2, x = 3",
+  "steps": [
+    "Identify the quadratic",
+    "Find two numbers",
+    "Split the middle term",
+    "Factor by grouping",
+    "Solve for x",
+    "Verify"
+  ],
+  "scenes": [
+    {
+      "id": "problem",
+      "mode": "2d",
+      "pin": false,
+      "separate_labels": true,
+      "objects": [
+        {
+          "id": "stmt",
+          "type": "statement",
+          "color": "white",
+          "font_size": 30.0,
+          "at": "center",
+          "content": "Solve for $x$: $x^2 - 5x + 6 = 0$."
+        }
+      ],
+      "actions": [
+        {
+          "op": "write",
+          "targets": [
+            "stmt"
+          ]
+        },
+        {
+          "op": "wait",
+          "seconds": 1.576
+        }
+      ],
+      "template": "full_frame"
+    },
+    {
+      "id": "plot_2d_0",
+      "mode": "2d",
+      "pin": true,
+      "separate_labels": true,
+      "objects": [
+        {
+          "id": "quad_lab_0",
+          "type": "math",
+          "color": "white",
+          "font_size": 34.0,
+          "at": "title",
+          "tex": "y = x^2 - 5x + 6"
+        },
+        {
+          "id": "quad_ax_0",
+          "type": "axes",
+          "color": "white",
+          "at": "center",
+          "x_range": [
+            0.0,
+            5.0,
+            1.0
+          ],
+          "y_range": [
+            -2.0,
+            7.0,
+            1.0
+          ],
+          "x_length": 2.7777777777777777,
+          "y_length": 5.0
+        },
+        {
+          "id": "quad_curve_0",
+          "type": "plot",
+          "color": "blue",
+          "axes": "quad_ax_0",
+          "expr": "1.0*x**2 + (-5.0)*x + (6.0)",
+          "x_range": [
+            0.05,
+            4.95
+          ],
+          "shade": "none"
+        },
+        {
+          "id": "quad_root_0_0",
+          "type": "dot",
+          "color": "red",
+          "at": [
+            2.0,
+            0.0
+          ],
+          "axes": "quad_ax_0"
+        },
+        {
+          "id": "quad_root_0_1",
+          "type": "dot",
+          "color": "red",
+          "at": [
+            3.0,
+            0.0
+          ],
+          "axes": "quad_ax_0"
+        }
+      ],
+      "actions": [
+        {
+          "op": "write",
+          "targets": [
+            "quad_lab_0"
+          ]
+        },
+        {
+          "op": "create",
+          "targets": [
+            "quad_ax_0",
+            "quad_curve_0"
+          ]
+        },
+        {
+          "op": "fade_in",
+          "targets": [
+            "quad_root_0_0",
+            "quad_root_0_1"
+          ]
+        },
+        {
+          "op": "indicate",
+          "targets": [
+            "quad_root_0_0",
+            "quad_root_0_1"
+          ]
+        },
+        {
+          "op": "wait",
+          "seconds": 0.8
+        }
+      ],
+      "caption": "Where the parabola meets the x-axis",
+      "template": "full_frame"
+    },
+    {
+      "id": "board_1",
+      "mode": "2d",
+      "pin": false,
+      "separate_labels": true,
+      "objects": [
+        {
+          "id": "board_1_eq0",
+          "type": "math",
+          "color": "white",
+          "font_size": 36.0,
+          "at": "center",
+          "tex": "x^{2} - 5 x + 6 = 0"
+        },
+        {
+          "id": "board_1_eq1",
+          "type": "math",
+          "color": "white",
+          "font_size": 36.0,
+          "at": "center",
+          "tex": "(-2) \\cdot (-3) = 6,\\quad (-2) + (-3) = -5"
+        },
+        {
+          "id": "board_1_eq2",
+          "type": "math",
+          "color": "white",
+          "font_size": 36.0,
+          "at": "center",
+          "tex": "x^{2} - 2x - 3x + 6 = 0"
+        },
+        {
+          "id": "board_1_eq3",
+          "type": "math",
+          "color": "white",
+          "font_size": 36.0,
+          "at": "center",
+          "tex": "x(x - 2) - 3(x - 2) = 0"
+        },
+        {
+          "id": "board_1_eq4",
+          "type": "math",
+          "color": "white",
+          "font_size": 36.0,
+          "at": "center",
+          "tex": "(x - 2)(x - 3) = 0"
+        },
+        {
+          "id": "board_1_eq5",
+          "type": "math",
+          "color": "white",
+          "font_size": 36.0,
+          "at": "center",
+          "tex": "x - 2 = 0"
+        },
+        {
+          "id": "board_1_eq6",
+          "type": "math",
+          "color": "white",
+          "font_size": 36.0,
+          "at": "center",
+          "tex": "x - 3 = 0"
+        },
+        {
+          "id": "board_1_eq7",
+          "type": "math",
+          "color": "white",
+          "font_size": 36.0,
+          "at": "center",
+          "tex": "x = 2"
+        },
+        {
+          "id": "board_1_eq8",
+          "type": "math",
+          "color": "white",
+          "font_size": 36.0,
+          "at": "center",
+          "tex": "x = 3"
+        },
+        {
+          "id": "board_1_eq9",
+          "type": "math",
+          "color": "white",
+          "font_size": 36.0,
+          "at": "center",
+          "tex": "2^{2} - 5(2) + 6 = 0"
+        },
+        {
+          "id": "board_1_eq10",
+          "type": "math",
+          "color": "white",
+          "font_size": 36.0,
+          "at": "center",
+          "tex": "3^{2} - 5(3) + 6 = 0"
+        }
+      ],
+      "actions": [
+        {
+          "op": "set_caption",
+          "text": "Standard form $ax^{2}+bx+c=0$ with $a=1$, $b=-5$, $c=6$."
+        },
+        {
+          "op": "wait",
+          "seconds": 1.7973333333333334
+        },
+        {
+          "op": "write",
+          "targets": [
+            "board_1_eq0"
+          ]
+        },
+        {
+          "op": "wait",
+          "seconds": 4.0153333333333325
+        },
+        {
+          "op": "set_caption",
+          "text": "Find two numbers that multiply to $6$ and add to $-5$."
+        },
+        {
+          "op": "wait",
+          "seconds": 3.6320000000000006
+        },
+        {
+          "op": "derive",
+          "from": "board_1_eq0",
+          "to": "board_1_eq1",
+          "buff": 0.55
+        },
+        {
+          "op": "wait",
+          "seconds": 3.5300000000000025
+        },
+        {
+          "op": "set_caption",
+          "text": "Rewrite the $-5x$ term using $-2$ and $-3$."
+        },
+        {
+          "op": "wait",
+          "seconds": 3.1839999999999993
+        },
+        {
+          "op": "derive",
+          "from": "board_1_eq1",
+          "to": "board_1_eq2",
+          "buff": 0.55
+        },
+        {
+          "op": "wait",
+          "seconds": 2.250000000000005
+        },
+        {
+          "op": "set_caption",
+          "text": "Group the four terms and pull out the common binomial."
+        },
+        {
+          "op": "wait",
+          "seconds": 2.586666666666668
+        },
+        {
+          "op": "derive",
+          "from": "board_1_eq2",
+          "to": "board_1_eq3",
+          "buff": 0.55
+        },
+        {
+          "op": "wait",
+          "seconds": 1.2946666666666644
+        },
+        {
+          "op": "derive",
+          "from": "board_1_eq3",
+          "to": "board_1_eq4",
+          "buff": 0.55
+        },
+        {
+          "op": "wait",
+          "seconds": 3.8286666666666647
+        },
+        {
+          "op": "set_caption",
+          "text": "Set each factor equal to zero."
+        },
+        {
+          "op": "wait",
+          "seconds": 1.6266666666666687
+        },
+        {
+          "op": "fork",
+          "from": "board_1_eq4",
+          "to": [
+            "board_1_eq5",
+            "board_1_eq6"
+          ],
+          "buff": 0.75
+        },
+        {
+          "op": "wait",
+          "seconds": 0.4
+        },
+        {
+          "op": "derive",
+          "from": "board_1_eq5",
+          "to": "board_1_eq7",
+          "buff": 0.55
+        },
+        {
+          "op": "wait",
+          "seconds": 0.4
+        },
+        {
+          "op": "derive",
+          "from": "board_1_eq6",
+          "to": "board_1_eq8",
+          "buff": 0.55
+        },
+        {
+          "op": "wait",
+          "seconds": 2.1453333333333346
+        },
+        {
+          "op": "set_caption",
+          "text": "Substitute each root back into the original equation."
+        },
+        {
+          "op": "wait",
+          "seconds": 1.186
+        },
+        {
+          "op": "derive",
+          "from": "board_1_eq7",
+          "to": "board_1_eq9",
+          "buff": 0.55
+        },
+        {
+          "op": "wait",
+          "seconds": 0.4
+        },
+        {
+          "op": "derive",
+          "from": "board_1_eq8",
+          "to": "board_1_eq10",
+          "buff": 0.55
+        },
+        {
+          "op": "wait",
+          "seconds": 0.4
+        },
+        {
+          "op": "wait",
+          "seconds": 0.35
+        },
+        {
+          "op": "box",
+          "targets": [
+            "board_1_eq7",
+            "board_1_eq8"
+          ]
+        },
+        {
+          "op": "wait",
+          "seconds": 1.0
+        }
+      ],
+      "template": "board_only"
+    }
+  ],
+  "narration": [
+    {
+      "scene_id": "problem",
+      "start_action": 0,
+      "speech": "[[beat]] Solve for x: x squared minus five x plus six equals zero.",
+      "beat_actions": [
+        0
+      ],
+      "spoken": "Solve for x: x squared minus five x plus six equals zero.",
+      "wav": "line_000.wav",
+      "duration": 4.266666666666667,
+      "beat_times": [
+        0.0
+      ],
+      "start_seconds": 0.0
+    },
+    {
+      "scene_id": "board_1",
+      "start_action": 0,
+      "speech": "This is a quadratic in standard form. [[beat]] a is one, b is negative five, and c is six.",
+      "beat_actions": [
+        2
+      ],
+      "spoken": "This is a quadratic in standard form. a is one, b is negative five, and c is six.",
+      "wav": "line_001.wav",
+      "duration": 6.312666666666667,
+      "beat_times": [
+        2.1973333333333334
+      ],
+      "start_seconds": 9.196
+    },
+    {
+      "scene_id": "board_1",
+      "start_action": 4,
+      "speech": "Find two numbers that multiply to six and add to negative five. [[beat]] Those numbers are negative two and negative three.",
+      "beat_actions": [
+        6
+      ],
+      "spoken": "Find two numbers that multiply to six and add to negative five. Those numbers are negative two and negative three.",
+      "wav": "line_002.wav",
+      "duration": 8.062000000000001,
+      "beat_times": [
+        4.032
+      ],
+      "start_seconds": 16.058666666666667
+    },
+    {
+      "scene_id": "board_1",
+      "start_action": 8,
+      "speech": "Rewrite the middle term using negative two and negative three. [[beat]] Split it into those two terms.",
+      "beat_actions": [
+        10
+      ],
+      "spoken": "Rewrite the middle term using negative two and negative three. Split it into those two terms.",
+      "wav": "line_003.wav",
+      "duration": 6.334,
+      "beat_times": [
+        3.584
+      ],
+      "start_seconds": 24.67066666666667
+    },
+    {
+      "scene_id": "board_1",
+      "start_action": 12,
+      "speech": "Group the four terms and pull out the common binomial. [[beat]] First, group them. [[beat]] That factors into a pair of binomials equal to zero.",
+      "beat_actions": [
+        14,
+        16
+      ],
+      "spoken": "Group the four terms and pull out the common binomial. First, group them. That factors into a pair of binomials equal to zero.",
+      "wav": "line_004.wav",
+      "duration": 9.66,
+      "beat_times": [
+        2.986666666666667,
+        5.331333333333333
+      ],
+      "start_seconds": 31.55466666666667
+    },
+    {
+      "scene_id": "board_1",
+      "start_action": 18,
+      "speech": "Set each factor equal to zero. [[beat]] One solution is x equals two. One solution is x equals three.",
+      "beat_actions": [
+        20
+      ],
+      "spoken": "Set each factor equal to zero. One solution is x equals two. One solution is x equals three.",
+      "wav": "line_005.wav",
+      "duration": 7.422,
+      "beat_times": [
+        2.026666666666667
+      ],
+      "start_seconds": 41.764666666666656
+    },
+    {
+      "scene_id": "board_1",
+      "start_action": 26,
+      "speech": "Substitute each root back into the original equation.",
+      "beat_actions": [],
+      "spoken": "Substitute each root back into the original equation.",
+      "wav": "line_006.wav",
+      "duration": 3.264,
+      "beat_times": [],
+      "start_seconds": 49.73666666666665
+    }
+  ]
+}

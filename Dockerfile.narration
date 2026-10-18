@@ -1,0 +1,27 @@
+# Optional narration layer on top of the standard Cinemath worker image (~5.9 GB today).
+# Build base first: docker build -f Dockerfile -t cinemath-worker:latest .
+#
+# - Installs espeak-ng + Python ONNX stack only (no model weights in the image).
+# - Mount a host/volume at /var/lib/cinemath/tts (see fetch-kokoro-onnx-models.sh).
+# - Narration remains opt-in per job (not always-on).
+
+ARG BASE_IMAGE=cinemath-worker:latest
+FROM ${BASE_IMAGE}
+
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    espeak-ng \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+RUN uv sync --frozen --no-dev --extra narration
+
+ENV CINEMATH_TTS_MODEL_DIR=/var/lib/cinemath/tts
+ENV CINEMATH_KOKORO_ONNX=/var/lib/cinemath/tts/kokoro-v1.0.int8.onnx
+ENV CINEMATH_KOKORO_VOICES=/var/lib/cinemath/tts/voices-v1.0.bin
+
+RUN mkdir -p /var/lib/cinemath/tts
+VOLUME ["/var/lib/cinemath/tts"]
+
+# Populate weights on the host (once), not during docker build:
+#   cinemath/scripts/fetch-kokoro-onnx-models.sh /var/lib/cinemath/tts

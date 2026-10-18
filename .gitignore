@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Manim / media
+media/
+partial_movie_files/
+
+# Narration sample WAV clips (manifest + MP4 are committed)
+docs/samples/**/narration/*.wav
+docs/samples/**/narration/narration_track.wav
+
+# Project outputs (keep directory)
+outputs/*
+!outputs/.gitkeep
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# LaTeX build products
+docs/*.aux
+docs/*.bbl
+docs/*.blg
+docs/*.fdb_latexmk
+docs/*.fls
+docs/*.log
+docs/*.out
+docs/*.synctex.gz
+docs/*.toc

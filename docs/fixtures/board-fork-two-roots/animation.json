@@ -1,0 +1,121 @@
+{
+  "version": 1,
+  "problem": "Micro: fork two roots after factoring.",
+  "answer": "x = 2, x = 3",
+  "steps": [
+    "Fork",
+    "Solve branches"
+  ],
+  "scenes": [
+    {
+      "id": "fork_demo",
+      "mode": "2d",
+      "pin": false,
+      "separate_labels": true,
+      "objects": [
+        {
+          "id": "eq0",
+          "type": "math",
+          "color": "white",
+          "font_size": 36.0,
+          "at": "center",
+          "tex": "(x - 2)(x - 3) = 0"
+        },
+        {
+          "id": "eq1",
+          "type": "math",
+          "color": "white",
+          "font_size": 36.0,
+          "at": "center",
+          "tex": "x - 2 = 0"
+        },
+        {
+          "id": "eq2",
+          "type": "math",
+          "color": "white",
+          "font_size": 36.0,
+          "at": "center",
+          "tex": "x - 3 = 0"
+        },
+        {
+          "id": "eq3",
+          "type": "math",
+          "color": "white",
+          "font_size": 36.0,
+          "at": "center",
+          "tex": "x = 2"
+        },
+        {
+          "id": "eq4",
+          "type": "math",
+          "color": "white",
+          "font_size": 36.0,
+          "at": "center",
+          "tex": "x = 3"
+        }
+      ],
+      "actions": [
+        {
+          "op": "wait",
+          "seconds": 0.6
+        },
+        {
+          "op": "write",
+          "targets": [
+            "eq0"
+          ]
+        },
+        {
+          "op": "wait",
+          "seconds": 0.8
+        },
+        {
+          "op": "fork",
+          "from": "eq0",
+          "to": [
+            "eq1",
+            "eq2"
+          ],
+          "buff": 0.75
+        },
+        {
+          "op": "wait",
+          "seconds": 0.6
+        },
+        {
+          "op": "derive",
+          "from": "eq1",
+          "to": "eq3",
+          "buff": 0.55
+        },
+        {
+          "op": "wait",
+          "seconds": 0.4
+        },
+        {
+          "op": "derive",
+          "from": "eq2",
+          "to": "eq4",
+          "buff": 0.55
+        },
+        {
+          "op": "wait",
+          "seconds": 0.8
+        },
+        {
+          "op": "box",
+          "targets": [
+            "eq3",
+            "eq4"
+          ]
+        },
+        {
+          "op": "wait",
+          "seconds": 1.0
+        }
+      ],
+      "caption": "Set each factor equal to zero.",
+      "template": "board_only"
+    }
+  ]
+}

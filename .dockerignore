@@ -1,0 +1,10 @@
+.venv
+outputs
+media
+partial_movie_files
+__pycache__
+.pytest_cache
+*.pyc
+.git
+.env
+.env.*
