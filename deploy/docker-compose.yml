@@ -1,0 +1,98 @@
+# Production stack on mautedpc. Each repo syncs this same file.
+name: tutometry
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: tutometry-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: tutometry
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: tutometry
+    volumes:
+      - ${DATA_PATH:-/home/mauted/storage/tutometry/postgres}:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tutometry -d tutometry"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - homepage
+
+  tuto-api:
+    image: ${TUTOMETRY_RUNTIME_IMAGE:-oven/bun:1.3}
+    container_name: tuto-api
+    restart: unless-stopped
+    working_dir: /app
+    command: ["./scripts/docker-entrypoint.sh"]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgres://tutometry:${POSTGRES_PASSWORD}@postgres:5432/tutometry
+      CINEMATH_WORKER_URL: ${CINEMATH_WORKER_URL:-http://cinemath-worker:8080}
+      CINEMATH_WORKER_SECRET: ${CINEMATH_WORKER_SECRET:-}
+      GENERATION_WORKER_SECRET: ${GENERATION_WORKER_SECRET:-}
+      DATA_DIR: /data
+      PUBLIC_URL: https://tutometry.mauted.com
+      APP_ENV: production
+      NODE_ENV: production
+      SESSION_COOKIE_SECURE: "true"
+      HOST: 0.0.0.0
+      PORT: "3001"
+    volumes:
+      - ${FILES_PATH:-/home/mauted/storage/tutometry/files}:/data
+      - ${TUTO_API_CODE_PATH:-/home/mauted/code/tuto-api}:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      cinemath-worker:
+        condition: service_started
+    networks:
+      - homepage
+
+  tuto-web:
+    image: ${TUTOMETRY_RUNTIME_IMAGE:-oven/bun:1.3}
+    container_name: tuto-web
+    restart: unless-stopped
+    working_dir: /app
+    command: ["bun", "server/static.ts"]
+    ports:
+      - "0.0.0.0:8341:3000"
+    environment:
+      PORT: "3000"
+      API_ORIGIN: http://tuto-api:3001
+      NODE_ENV: production
+    volumes:
+      - ${TUTO_WEB_CODE_PATH:-/home/mauted/code/tuto-web}:/app
+    depends_on:
+      - tuto-api
+    networks:
+      - homepage
+
+  cinemath-worker:
+    image: ${CINEMATH_IMAGE:-cinemath-worker:latest}
+    container_name: cinemath-worker
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_WORKSPACE_ID: ${ANTHROPIC_WORKSPACE_ID:-}
+      WORKER_SHARED_SECRET: ${CINEMATH_WORKER_SECRET:-}
+      PORT: "8080"
+      CINEMATH_WORKER_ARTIFACT_DIR: /artifacts
+      CINEMATH_ENABLE_NARRATION: ${CINEMATH_ENABLE_NARRATION:-0}
+      CINEMATH_TTS_ENGINE: ${CINEMATH_TTS_ENGINE:-auto}
+      CINEMATH_TTS_MODEL_DIR: ${CINEMATH_TTS_MODEL_DIR:-/var/lib/cinemath/tts}
+    volumes:
+      - ${CINEMATH_ARTIFACTS_PATH:-/home/mauted/storage/tutometry/cinemath-artifacts}:/artifacts
+    networks:
+      - homepage
+
+networks:
+  homepage:
+    external: true
+    name: homepage_homepage

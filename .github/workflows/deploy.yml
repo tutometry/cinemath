@@ -1,0 +1,48 @@
+name: Deploy worker
+
+on:
+  push:
+    branches: [platform]
+  workflow_dispatch:
+
+concurrency:
+  group: mautedpc-tutometry-stack
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy worker to mautedpc
+    runs-on: [self-hosted, mautedpc]
+    timeout-minutes: 90
+    env:
+
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      PUBLIC_URL: https://tutometry.mauted.com
+      ADMIN_EMAILS: ${{ secrets.ADMIN_EMAILS }}
+      SAAS_OWNER_ALLOWLIST: ${{ secrets.SAAS_OWNER_ALLOWLIST }}
+      SAAS_OPEN_SIGNUP: ${{ secrets.SAAS_OPEN_SIGNUP }}
+      SAAS_SIGNUP_CREDITS: ${{ secrets.SAAS_SIGNUP_CREDITS }}
+      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+      STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+      STRIPE_PRICE_CREDIT_PACK_ID: ${{ secrets.STRIPE_PRICE_CREDIT_PACK_ID }}
+      STRIPE_CREDIT_PACK_AMOUNT: ${{ secrets.STRIPE_CREDIT_PACK_AMOUNT }}
+      CINEMATH_WORKER_URL: ${{ secrets.CINEMATH_WORKER_URL }}
+      CINEMATH_WORKER_SECRET: ${{ secrets.CINEMATH_WORKER_SECRET }}
+      GENERATION_WORKER_SECRET: ${{ secrets.GENERATION_WORKER_SECRET }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ANTHROPIC_WORKSPACE_ID: ${{ secrets.ANTHROPIC_WORKSPACE_ID }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+      REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy
+        uses: ./.github/actions/mautedpc-deploy
+        with:
+          deploy_script: scripts/ci-deploy.sh

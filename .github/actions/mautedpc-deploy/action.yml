@@ -1,0 +1,12 @@
+name: Deploy to mautedpc
+description: Run the repo deploy script. Production env is set on the job.
+inputs:
+  deploy_script:
+    description: Repo-relative deploy script
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Run deploy script
+      shell: bash
+      run: bash ${{ inputs.deploy_script }}
