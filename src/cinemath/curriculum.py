@@ -13,6 +13,7 @@ from cinemath.teaching.llm import (
     _create_message,
     _parse_json,
     _text_content,
+    classify_text_completion,
 )
 
 UNSORTED = "unsorted"
@@ -170,15 +171,12 @@ def classify_topic(problem_text: str, syllabus: list[dict[str, str]]) -> str:
     text = problem_text.strip()
     if not text:
         return UNSORTED
-    client = _client()
-    message = _create_message(
-        client,
+    raw = classify_text_completion(
         system=CLASSIFY_TOPIC_SYSTEM + "\n\nAllowed topics:\n" + _syllabus_block(syllabus),
-        messages=[{"role": "user", "content": f"Classify this problem:\n\n{text}"}],
+        user_text=f"Classify this problem:\n\n{text}",
         max_tokens=256,
-        model=_classify_model(),
     )
-    return parse_classify_topic_response(_text_content(message), syllabus)
+    return parse_classify_topic_response(raw, syllabus)
 
 
 def extract_assignment(

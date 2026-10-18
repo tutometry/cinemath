@@ -75,12 +75,17 @@ services:
     image: ${CINEMATH_IMAGE:-cinemath-worker:latest}
     container_name: cinemath-worker
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     env_file:
       - path: .env
         required: false
     environment:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       ANTHROPIC_WORKSPACE_ID: ${ANTHROPIC_WORKSPACE_ID:-}
+      CINEMATH_CLASSIFY_PROVIDER: ${CINEMATH_CLASSIFY_PROVIDER:-}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_CLASSIFY_MODEL: ${OLLAMA_CLASSIFY_MODEL:-llama3.1:8b}
       WORKER_SHARED_SECRET: ${CINEMATH_WORKER_SECRET:-}
       PORT: "8080"
       CINEMATH_WORKER_ARTIFACT_DIR: /artifacts

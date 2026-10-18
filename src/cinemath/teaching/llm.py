@@ -16,6 +16,15 @@ from cinemath.plan.schema import TEACH_SYSTEM
 from cinemath.planners.registry import CLASSIFY_SYSTEM, CLASSIFY_TOOLS, run_catalog
 from cinemath.plan.validate import PlanValidationError, validate_plan
 from cinemath.teaching.verify import verify_feedback_message, verify_plan
+from cinemath.teaching.ollama import (
+    append_assistant_tool_turn,
+    append_tool_result,
+    anthropic_tools_to_ollama,
+    chat_text as ollama_chat_text,
+    chat_with_tools as ollama_chat_with_tools,
+    ollama_classify_model,
+    use_ollama_classify,
+)
 from cinemath.core.logger import get_logger
 
 DEFAULT_CLASSIFY_MODEL = "claude-haiku-4-5"
@@ -59,11 +68,37 @@ def _client() -> Anthropic:
 
 
 def _classify_model() -> str:
+    if use_ollama_classify():
+        return ollama_classify_model()
     return (
         os.environ.get("ANTHROPIC_CLASSIFY_MODEL")
         or os.environ.get("ANTHROPIC_MODEL")
         or DEFAULT_CLASSIFY_MODEL
     )
+
+
+def classify_text_completion(
+    *,
+    system: str,
+    user_text: str,
+    max_tokens: int = 256,
+) -> str:
+    """Classify/extract text paths; uses Ollama when CINEMATH_CLASSIFY_PROVIDER=ollama."""
+    if use_ollama_classify():
+        return ollama_chat_text(
+            system=system,
+            messages=[{"role": "user", "content": user_text}],
+            max_tokens=max_tokens,
+        )
+    client = _client()
+    message = _create_message(
+        client,
+        system=system,
+        messages=[{"role": "user", "content": user_text}],
+        max_tokens=max_tokens,
+        model=_classify_model(),
+    )
+    return _text_content(message)
 
 
 def _teach_model() -> str:
@@ -158,10 +193,17 @@ def _parse_json(text: str) -> dict[str, Any]:
         raise
 
 
-def _try_catalog_plan(client: Anthropic, problem_text: str) -> tuple[dict[str, Any], str] | None:
+def _try_catalog_plan(problem_text: str) -> tuple[dict[str, Any], str] | None:
     """Classify → catalog planner plan.json, or None for freeform teacher."""
+    if use_ollama_classify():
+        return _try_catalog_plan_ollama(problem_text)
+    return _try_catalog_plan_anthropic(problem_text)
+
+
+def _try_catalog_plan_anthropic(problem_text: str) -> tuple[dict[str, Any], str] | None:
+    client = _client()
     model = _classify_model()
-    log.info("classifying problem (model=%s)", model)
+    log.info("classifying problem (provider=anthropic model=%s)", model)
     messages: list[dict[str, Any]] = [
         {"role": "user", "content": f"Classify:\n\n{problem_text}"}
     ]
@@ -212,21 +254,63 @@ def _try_catalog_plan(client: Anthropic, problem_text: str) -> tuple[dict[str, A
     return None
 
 
+def _try_catalog_plan_ollama(problem_text: str) -> tuple[dict[str, Any], str] | None:
+    model = _classify_model()
+    log.info("classifying problem (provider=ollama model=%s)", model)
+    ollama_tools = anthropic_tools_to_ollama(CLASSIFY_TOOLS)
+    messages: list[dict[str, Any]] = [
+        {"role": "user", "content": f"Classify:\n\n{problem_text}"}
+    ]
+    for attempt in range(_MAX_CLASSIFY_ROUNDS):
+        turn = ollama_chat_with_tools(
+            system=CLASSIFY_SYSTEM,
+            messages=messages,
+            tools=ollama_tools,
+            max_tokens=1024,
+            model=model,
+        )
+        if not turn.tool_calls:
+            log.info("classifier returned no tool call → freeform")
+            return None
+        if len(turn.tool_calls) != 1:
+            raise PlanValidationError("Classifier must call exactly one tool")
+
+        call = turn.tool_calls[0]
+        log.debug("classifier tool: %s", call.name)
+        try:
+            plan = run_catalog(call.name, dict(call.arguments))
+        except Exception as exc:  # noqa: BLE001
+            log.warning("catalog planner %s failed: %s", call.name, exc)
+            append_assistant_tool_turn(messages, turn)
+            append_tool_result(
+                messages,
+                tool_name=call.name,
+                content=tool_result_content(exc),
+            )
+            continue
+
+        if plan is not None:
+            log.info("catalog hit: %s", call.name)
+            return plan, call.name
+        log.info("classifier chose teach_freeform")
+        return None
+
+    log.warning("classifier exhausted %d rounds → freeform", _MAX_CLASSIFY_ROUNDS)
+    return None
+
+
 def extract_problem_text(problem: ProblemInput) -> str:
-    client = _client()
     model = _classify_model()
     log.info("extracting problem (%s, model=%s)", problem.kind, model)
     if problem.kind == "text":
         assert problem.text is not None
-        message = _create_message(
-            client,
+        return classify_text_completion(
             system=EXTRACT_SYSTEM,
-            messages=[{"role": "user", "content": problem.text}],
+            user_text=problem.text,
             max_tokens=1024,
-            model=model,
         )
-        return _text_content(message)
 
+    client = _client()
     assert problem.image_base64 and problem.image_media_type
     message = _create_message(
         client,
@@ -261,7 +345,7 @@ def generate_teacher_plan(
 ) -> TeacherPlan:
     """Classify → catalog plan.json, or freeform LLM teacher → plan.json."""
     client = _client()
-    catalog_hit = _try_catalog_plan(client, problem_text)
+    catalog_hit = _try_catalog_plan(problem_text)
     if catalog_hit is not None:
         plan, planner = catalog_hit
         return TeacherPlan(plan=plan, source="catalog", planner=planner)

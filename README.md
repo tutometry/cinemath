@@ -32,6 +32,8 @@ cp .env.example .env            # set ANTHROPIC_API_KEY
 
 Optional: `ANTHROPIC_CLASSIFY_MODEL` (default Haiku) for routing/OCR; `ANTHROPIC_TEACH_MODEL` (default Sonnet) for freeform plans. `ANTHROPIC_MODEL` overrides both when the specific vars are unset. If Anthropic returns “key is not workspace-scoped”, set `ANTHROPIC_WORKSPACE_ID=wrkspc_…` (or use a workspace-scoped API key). Use `--verbose` / `CINEMATH_LOG_LEVEL=DEBUG` for full pipeline logs (color on in TTY; set `NO_COLOR=1` or `CINEMATH_LOG_COLOR=0` to disable).
 
+**Ollama (classify only):** set `CINEMATH_CLASSIFY_PROVIDER=ollama`, `OLLAMA_BASE_URL`, and `OLLAMA_CLASSIFY_MODEL` (default `llama3.1:8b`). Routes catalog `plan_*` classification and `/v1/classify-topic` through local Ollama. Freeform teaching and image/PDF extraction still require Anthropic. On mautedpc, Ollama must listen on an address reachable from Docker (e.g. `OLLAMA_HOST=0.0.0.0:11434` in the Ollama systemd unit, firewall accordingly); the stack sets `OLLAMA_BASE_URL=http://host.docker.internal:11434` on `cinemath-worker`.
+
 ## Usage
 
 ```bash
@@ -45,7 +47,7 @@ See [`problems/curated/README.md`](../problems/curated/README.md) for the full *
 
 ## Worker (HTTP, co-deployed with Tutometry)
 
-Production image (`Dockerfile`) defaults to **`cinemath-worker`** — an HTTP server on the Docker network at `http://cinemath-worker:8080` (`CINEMATH_WORKER_URL` on the Next.js app). Routes: `POST /v1/generate`, `POST /v1/classify-topic`, `POST /v1/extract-assignment`, `GET /v1/artifacts/{job}/{attempt}/{file}` with bearer `WORKER_SHARED_SECRET` (same value as Tutometry `CINEMATH_WORKER_SECRET`). Required env: `ANTHROPIC_API_KEY`, `WORKER_SHARED_SECRET`. Optional: `ANTHROPIC_WORKSPACE_ID`, `ANTHROPIC_CLASSIFY_MODEL`, `ANTHROPIC_TEACH_MODEL`.
+Production image (`Dockerfile`) defaults to **`cinemath-worker`** — an HTTP server on the Docker network at `http://cinemath-worker:8080` (`CINEMATH_WORKER_URL` on the Next.js app). Routes: `POST /v1/generate`, `POST /v1/classify-topic`, `POST /v1/extract-assignment`, `GET /v1/artifacts/{job}/{attempt}/{file}` with bearer `WORKER_SHARED_SECRET` (same value as Tutometry `CINEMATH_WORKER_SECRET`). Required env: `ANTHROPIC_API_KEY`, `WORKER_SHARED_SECRET`. Optional: `ANTHROPIC_WORKSPACE_ID`, `ANTHROPIC_CLASSIFY_MODEL`, `ANTHROPIC_TEACH_MODEL`, `CINEMATH_CLASSIFY_PROVIDER`, `OLLAMA_BASE_URL`, `OLLAMA_CLASSIFY_MODEL`.
 
 On mautedpc, `.github/workflows/deploy-cinemath.yml` builds and rolls the worker via `scripts/ci-deploy-cinemath.sh`. API contract: `contracts/cinemath-worker.openapi.yaml`.
 
