@@ -16,8 +16,11 @@ require_env_keys "${SRC}/deploy/required-cinemath.keys"
 write_deploy_env_file
 rsync_repo "${CINEMATH_CODE}"
 
-echo "==> docker build ${CINEMATH_IMAGE}"
-docker build -t "${CINEMATH_IMAGE}" "${CINEMATH_CODE}"
+echo "==> docker build ${CINEMATH_IMAGE} (base + narration)"
+docker build -t "${CINEMATH_IMAGE}-base" -f "${CINEMATH_CODE}/Dockerfile" "${CINEMATH_CODE}"
+docker build -t "${CINEMATH_IMAGE}" -f "${CINEMATH_CODE}/Dockerfile.narration" \
+  --build-arg "BASE_IMAGE=${CINEMATH_IMAGE}-base" \
+  "${CINEMATH_CODE}"
 
 sync_compose_manifest
 setup_compose

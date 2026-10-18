@@ -89,11 +89,12 @@ services:
       WORKER_SHARED_SECRET: ${CINEMATH_WORKER_SECRET:-}
       PORT: "8080"
       CINEMATH_WORKER_ARTIFACT_DIR: /artifacts
-      CINEMATH_ENABLE_NARRATION: ${CINEMATH_ENABLE_NARRATION:-0}
+      CINEMATH_ENABLE_NARRATION: ${CINEMATH_ENABLE_NARRATION:-1}
       CINEMATH_TTS_ENGINE: ${CINEMATH_TTS_ENGINE:-auto}
       CINEMATH_TTS_MODEL_DIR: ${CINEMATH_TTS_MODEL_DIR:-/var/lib/cinemath/tts}
     volumes:
       - ${CINEMATH_ARTIFACTS_PATH:-/home/mauted/storage/tutometry/cinemath-artifacts}:/artifacts
+      - ${CINEMATH_TTS_PATH:-/home/mauted/storage/tutometry/cinemath-tts}:/var/lib/cinemath/tts
     networks:
       - homepage
 

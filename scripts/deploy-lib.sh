@@ -56,7 +56,8 @@ deploy_env_value_for_key() {
 
 ensure_deploy_dirs() {
   mkdir -p "${API_CODE}" "${WEB_CODE}" "${CINEMATH_CODE}" "${STACK_DEST}" \
-    "${DATA_DEST}/postgres" "${DATA_DEST}/files" "${DATA_DEST}/cinemath-artifacts}"
+    "${DATA_DEST}/postgres" "${DATA_DEST}/files" "${DATA_DEST}/cinemath-artifacts" \
+    "${DATA_DEST}/cinemath-tts"
 }
 
 write_deploy_env_file() {
@@ -79,6 +80,8 @@ CINEMATH_IMAGE=${CINEMATH_IMAGE}
 CINEMATH_CLASSIFY_PROVIDER=${CINEMATH_CLASSIFY_PROVIDER:-ollama}
 OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
 OLLAMA_CLASSIFY_MODEL=${OLLAMA_CLASSIFY_MODEL:-llama3.1:8b}
+CINEMATH_ENABLE_NARRATION=${CINEMATH_ENABLE_NARRATION:-1}
+CINEMATH_TTS_PATH=${CINEMATH_TTS_PATH:-${DATA_DEST}/cinemath-tts}
 EOF
   echo "    wrote deploy env → ${ENV_FILE}"
 }
